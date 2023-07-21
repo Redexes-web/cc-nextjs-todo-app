@@ -9,9 +9,7 @@ const Home = ({ tasks }) => {
 			<ul>
 				{tasks.map((task) => (
 					<li key={task.id}>
-						<Link href={`/tasks/${task.id}`}>
-							{task.title}
-						</Link>
+						<Link href={`/tasks/${task.id}`}>{task.title}</Link>
 					</li>
 				))}
 			</ul>
@@ -20,15 +18,24 @@ const Home = ({ tasks }) => {
 };
 
 export async function getServerSideProps() {
-	const response = await axios.get(
-		'https://jsonplaceholder.typicode.com/todos'
-	);
-	const tasks = response.data;
-	return {
-		props: {
-			tasks,
-		},
-	};
+	try {
+		const response = await axios.get(
+			'https://jsonplaceholder.typicode.com/todos'
+		);
+		const tasks = response.data;
+		return {
+			props: {
+				tasks,
+			},
+		};
+	} catch (error) {
+		console.error('Error:', error.message);
+		return {
+			props: {
+				tasks: [],
+			},
+		};
+	}
 }
 
 export default Home;

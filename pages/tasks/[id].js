@@ -1,5 +1,6 @@
 import React from 'react';
 import axios from 'axios';
+import { notFound } from 'next/navigation'
 
 const TaskDetail = ({ task }) => {
 	return (
@@ -11,16 +12,23 @@ const TaskDetail = ({ task }) => {
 };
 
 export async function getServerSideProps(context) {
-	const { id } = context.query;
-	const response = await axios.get(
+	try {
+	  const { id } = context.query;
+	  const response = await axios.get(
 		`https://jsonplaceholder.typicode.com/todos/${id}`
-	);
-	const task = response.data;
-	return {
+	  );
+	  const task = response.data;
+	  return {
 		props: {
-			task,
+		  task,
 		},
-	};
-}
+	  };
+	} catch (error) {
+	  console.error('Error:', error.message);
+	  return {
+		notFound: true,
+	  };
+	}
+  }
 
 export default TaskDetail;
